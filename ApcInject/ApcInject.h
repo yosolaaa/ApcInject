@@ -1,0 +1,42 @@
+#pragma once
+#include "pch.h"
+#include "FastMutex.h"
+
+typedef enum _INJ_SYSTEM_DLL
+{
+	INJ_NOTHING_LOADED = 0x0000,
+	INJ_SYSARM32_NTDLL_LOADED = 0x0001,
+	INJ_SYCHPE32_NTDLL_LOADED = 0x0002,
+	INJ_SYSWOW64_NTDLL_LOADED = 0x0004,
+	INJ_SYSTEM32_NTDLL_LOADED = 0x0008,
+	INJ_SYSTEM32_WOW64_LOADED = 0x0010,
+	INJ_SYSTEM32_WOW64WIN_LOADED = 0x0020,
+	INJ_SYSTEM32_WOW64CPU_LOADED = 0x0040,
+	INJ_SYSTEM32_WOWARMHW_LOADED = 0x0080,
+	INJ_SYSTEM32_XTAJIT_LOADED = 0x0100,
+} INJ_SYSTEM_DLL;
+typedef struct _INJ_SYSTEM_DLL_DESCRIPTOR
+{
+	UNICODE_STRING  DllPath;
+	INJ_SYSTEM_DLL  Flag;
+} INJ_SYSTEM_DLL_DESCRIPTOR, * PINJ_SYSTEM_DLL_DESCRIPTOR;
+
+struct ProcessInfo
+{
+	HANDLE ProcessId;
+	PVOID  LdrLoadDllRoutineAddress;
+	ULONG  LoadedDlls;
+};
+
+
+template<typename T>
+struct FullItem {
+	LIST_ENTRY Entry;
+	T Data;
+};
+
+struct Globals {
+	LIST_ENTRY ItemsHead;
+	int ItemCount;
+	FastMutex Mutex;
+};
